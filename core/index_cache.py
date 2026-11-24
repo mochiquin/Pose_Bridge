@@ -47,7 +47,7 @@ def load_cache(
     cache_path = Path(cache_path)
     try:
         payload = json.loads(cache_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+    except (OSError, ValueError):  # ValueError covers bad JSON and bytes that are not UTF-8
         return None
     if not isinstance(payload, dict) or payload.get("schema") != CACHE_SCHEMA:
         return None

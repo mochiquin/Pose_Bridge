@@ -2,11 +2,12 @@
 
 ## 待办
 
-- [ ] 为 `core/index_cache.py`、`core/mhx_rules.py` 补充 pytest
 - [ ] 配置远程仓库并推送
 - [ ] 首次保存前，保存目录不存在所以不在库根目录里（保存一次后正常）：是否需要在 UI 里提示
 
 ## 已完成
+
+- [x] core 补测试：新增 `tests/test_index_cache_edges.py`（24 项，`index_cache` 边界 + `natural_key`）；`mhx_rules` 原有测试已完整；修复 `load_cache` 遇到非 UTF-8 缓存文件会崩溃的 bug（现共 128 项通过）
 
 - [x] 初始提交存档（f9e1619），104 项测试 + ruff 通过
 - [x] Save Pose 在 Blender 5.2 用 MCP 实测
