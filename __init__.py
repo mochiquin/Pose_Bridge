@@ -45,14 +45,20 @@ if bpy is not None:
             if hasattr(scene, "pose_bridge") and scene.pose_bridge.target_rig is not None:
                 executor.track_character(bpy.context, scene.pose_bridge.target_rig)
 
-    def _track_all_once() -> None:
+    def _start_up_once() -> None:
         _track_all()
+        try:
+            operators.ensure_library(bpy.context)  # no need to press Scan after enabling the add-on
+        except Exception:  # a broken library folder must never stop the add-on from starting
+            import traceback
+
+            traceback.print_exc()
         return None
 
     @persistent
     def _on_load_post(_dummy) -> None:
         executor.reset_histories()  # a different .blend: the old characters are gone
-        operators.restore_from_cache(bpy.context)
+        operators.ensure_library(bpy.context, keep_existing=False)
         _track_all()
 
     def register() -> None:
@@ -62,8 +68,8 @@ if bpy is not None:
         bpy.types.Scene.pose_bridge = bpy.props.PointerProperty(type=properties.PoseBridgeSettings)
         bpy.app.handlers.load_post.append(_on_load_post)
         operators.sync_undo_limit(bpy.context)
-        # bpy.data is restricted while an add-on registers: start tracking right after it is enabled
-        bpy.app.timers.register(_track_all_once, first_interval=0.1, persistent=True)
+        # bpy.data is restricted while an add-on registers: start tracking and load the library right after it is enabled
+        bpy.app.timers.register(_start_up_once, first_interval=0.1, persistent=True)
 
     def unregister() -> None:
         if _on_load_post in bpy.app.handlers.load_post:

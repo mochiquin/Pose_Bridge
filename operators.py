@@ -58,6 +58,32 @@ def restore_from_cache(context: bpy.types.Context) -> bool:
     return True
 
 
+def ensure_library(context: bpy.types.Context, *, keep_existing: bool = True) -> str:
+    """Fill the library without the user pressing Scan: from the cache, else by scanning the configured folders.
+
+    Returns ``"kept"`` (a library is already loaded), ``"cache"``, ``"scanned"`` or ``"none"`` (nothing to load).
+    With ``keep_existing=False`` a library that is already loaded is replaced (used when another file is opened).
+    """
+    if keep_existing and len(library_state.index()) > 0:
+        return "kept"
+    if restore_from_cache(context):
+        return "cache"
+    try:
+        roots = preferences.configured_roots(context)
+    except KeyError:  # add-on preferences not available yet
+        return "none"
+    if not roots:
+        return "none"
+    result = scan_library(roots, DEFAULT_EXTENSIONS)
+    entries = list(result.entries)
+    try:
+        save_cache(preferences.cache_file(), entries, roots, DEFAULT_EXTENSIONS)
+    except OSError:  # the library still works without a cache file
+        pass
+    library_state.set_entries(entries)
+    return "scanned"
+
+
 class POSEBRIDGE_OT_add_root(bpy.types.Operator):
     bl_idname = "posebridge.add_root"
     bl_label = "Add Library Folder"

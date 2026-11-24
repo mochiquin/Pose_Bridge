@@ -6,6 +6,8 @@
 
 ## 已完成
 
+- [x] 启用插件 / 打开文件后库自动恢复：`operators.ensure_library`（有缓存读缓存，没缓存自动扫描，无库文件夹则什么都不做）；Blender 内实测通过（有缓存 0.04s 恢复 8093 条；删缓存后自动扫描并重建缓存）。库文件夹的文件变化仍需手动 Rescan（未做自动发现）
+
 - [x] T-pose 后 FK 骨骼（如 `forearm.fk.L`、手部、手指）动不了：原因是 T-pose 把 MHX 开关复位为 IK 开 + 手指控制开。新增 "T-Pose in FK" 选项（默认开）：复位后四肢 FK、手指控制关；`core/mhx_rules.fk_switch_values` + 4 项 pytest（共 132 项），Blender 内实测通过。MHX 自带的肘部限制（Z 轴锁、X -20°~135°、Y ±90°）不属于 bug，Limits 关掉即可解除
 
 - [x] 核心操作在 Blender 5.2 用 MCP 实测（DAZ 姿势套用、撤销/重做、T-pose、DAZ 动画套用、调整层添加/丢弃）全部正常，测后场景已还原
