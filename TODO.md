@@ -2,9 +2,14 @@
 
 ## 待办
 
-（暂无）
+- [ ] IK / FK 绑定问题：等用户描述具体现象后排查
+- [ ] 库里没有动画：Genesis 8 Female 的 `Animations` 文件夹没加入库根目录（偏好里点 From DAZ Importer 可加）
 
 ## 已完成
+
+- [x] 核心操作在 Blender 5.2 用 MCP 实测（DAZ 姿势套用、撤销/重做、T-pose、DAZ 动画套用、调整层添加/丢弃）全部正常，测后场景已还原
+  - T-pose 会把 MHX 开关复位为默认：IK 全部 =1、手指控制 =开
+  - DAZ Importer 套用姿势会把 IK 强制切到 FK（IK=0）；先手动把 IK 打开再套用，结果和 FK 起点完全一致（骨骼位置差 0）
 
 - [x] 配置远程仓库并推送（https://github.com/mochiquin/Pose_Bridge ，main 分支）；新增 README、LICENSE（MIT）、完善 `.gitignore`，作者改为 mochiquin
 
