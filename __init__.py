@@ -1,6 +1,6 @@
 bl_info = {
     "name": "Pose Bridge",
-    "author": "Material Converter project",
+    "author": "mochiquin",
     "version": (0, 1, 0),
     "blender": (5, 2, 0),
     "location": "View3D > Sidebar > Pose Bridge",

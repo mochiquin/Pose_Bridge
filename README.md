@@ -68,4 +68,6 @@ ruff check .
 
 ## 许可证
 
-尚未指定。本插件依赖的 DAZ Importer 使用 GPL，只通过其操作符调用。
+[MIT](LICENSE) © 2026 mochiquin
+
+本插件依赖的 DAZ Importer 使用 GPL，插件只通过其操作符调用，不包含它的代码。
