@@ -1,4 +1,30 @@
+# Python
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+*.egg-info/
+
+# Blender (never commit user projects or backups)
+*.blend
+*.blend1
+*.blend2
+*.blend@
+
+# Pose Bridge runtime output
+pose_bridge_index.json
+*.tmp
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude Code local settings
+.claude/settings.local.json
