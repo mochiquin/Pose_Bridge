@@ -2,9 +2,11 @@
 
 ## 待办
 
-- [ ] 库里没有动画：Genesis 8 Female 的 `Animations` 文件夹没加入库根目录（偏好里点 From DAZ Importer 可加）
+（暂无）
 
 ## 已完成
+
+- [x] 动画加入库：把 `Genesis 8 Female\Animations`（106 个）加入库根目录（只加这一个："From DAZ Importer" 还会加入 Genesis 2/3/8.1 的姿势，与当前角色不匹配）；从库入口套用动画、撤销均实测正常，库共 8199 条（姿势 8093 + 动画 106）
 
 - [x] 启用插件 / 打开文件后库自动恢复：`operators.ensure_library`（有缓存读缓存，没缓存自动扫描，无库文件夹则什么都不做）；Blender 内实测通过（有缓存 0.04s 恢复 8093 条；删缓存后自动扫描并重建缓存）。库文件夹的文件变化仍需手动 Rescan（未做自动发现）
 
