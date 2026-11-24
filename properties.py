@@ -1,7 +1,7 @@
 """Scene-level properties: browser position, display options and the current target rig."""
 
 import bpy
-from bpy.props import EnumProperty, FloatProperty, IntProperty, PointerProperty, StringProperty
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, PointerProperty, StringProperty
 
 
 def _is_armature(_self: bpy.types.PropertyGroup, obj: bpy.types.Object) -> bool:
@@ -64,4 +64,12 @@ class PoseBridgeSettings(bpy.types.PropertyGroup):
             ("SINGLE", "Single Click", "A click selects and applies at once"),
         ],
         default="DOUBLE",
+    )
+    tpose_fk: BoolProperty(
+        name="T-Pose in FK",
+        description=(
+            "After T-Pose leave the arms and legs in FK and the finger controls off, so every joint can be posed "
+            "by hand. Off: MHX defaults (IK on, finger controls on), where FK bones do not move the character"
+        ),
+        default=True,
     )

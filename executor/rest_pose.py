@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 import bpy
 
-from ..core import TRACK_NAME
+from ..core import TRACK_NAME, fk_switch_values
 from .adjust_layer import has_adjust
 from .character_history import recorded_change
 from .errors import ApplyError
@@ -48,15 +48,19 @@ def _drop_animation(rig: bpy.types.Object) -> tuple[str, ...]:
     return tuple(action.name for action in dropped)
 
 
-def reset_to_tpose(context: bpy.types.Context, rig: bpy.types.Object) -> RestReport:
-    """Put ``rig`` back to its rest pose; it is one step of the character's undo history."""
+def reset_to_tpose(context: bpy.types.Context, rig: bpy.types.Object, *, fk: bool = False) -> RestReport:
+    """Put ``rig`` back to its rest pose; it is one step of the character's undo history.
+
+    With ``fk`` the limbs are left in FK and the finger controls off (instead of the MHX defaults, which are IK
+    and finger controls on), so every joint can be posed by hand right away.
+    """
     if rig is None or rig.type != "ARMATURE":
         raise ApplyError("Choose an armature as the target rig")
     with recorded_change(context, rig):
-        return _reset_to_tpose(rig)
+        return _reset_to_tpose(rig, fk=fk)
 
 
-def _reset_to_tpose(rig: bpy.types.Object) -> RestReport:
+def _reset_to_tpose(rig: bpy.types.Object, *, fk: bool = False) -> RestReport:
     before = capture_pose(rig)
     kept = _drop_animation(rig)
 
@@ -66,12 +70,16 @@ def _reset_to_tpose(rig: bpy.types.Object) -> RestReport:
         pb.rotation_euler = (0.0, 0.0, 0.0)
         pb.scale = (1.0, 1.0, 1.0)
 
-    switches_reset = 0
+    switches_before = {k: rig[k] for k in rig.keys() if k.startswith(MHX_PROP_PREFIX)}
     for key in [k for k in rig.keys() if k.startswith(MHX_PROP_PREFIX)]:
         default = _ui_default(rig, key)
         if default is not None and rig[key] != default:
             rig[key] = default
-            switches_reset += 1
+    if fk:
+        current = {k: rig[k] for k in rig.keys() if k.startswith(MHX_PROP_PREFIX)}
+        for key, value in fk_switch_values(current).items():
+            rig[key] = value
 
     changed = count_changed_bones(rig, before)
+    switches_reset = sum(1 for key, value in switches_before.items() if rig[key] != value)
     return RestReport(bones_changed=changed, switches_reset=switches_reset, kept_actions=kept)

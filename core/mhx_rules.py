@@ -13,6 +13,8 @@ from collections.abc import Iterable
 _FINGER_BONE = re.compile(r"^(?:f_(?:index|middle|ring|pinky)\.\d+|thumb\.\d+)\.(?P<side>[LR])$")
 
 FINGER_SWITCH_PREFIX = "MhaFingerControl_"
+LIMB_IK_SWITCH_PREFIXES = ("MhaArmIk_", "MhaLegIk_")
+_SIDES = ("L", "R")
 
 
 def finger_sides(bone_names: Iterable[str]) -> list[str]:
@@ -29,3 +31,22 @@ def finger_switches_to_free(changed_bones: Iterable[str], switches: dict[str, ob
     """
     names = [f"{FINGER_SWITCH_PREFIX}{side}" for side in finger_sides(changed_bones)]
     return [name for name in names if switches.get(name) is True]
+
+
+def fk_switch_values(switches: dict[str, object]) -> dict[str, object]:
+    """New values that put every limb in FK and switch the finger controls off, so each joint can be posed by hand.
+
+    ``switches`` maps switch names to their current value. Only switches that exist and are not yet in FK mode
+    are returned; a switch keeps its type (the finger controls are booleans, the limb IK switches are numbers).
+    """
+    wanted = [f"{prefix}{side}" for prefix in LIMB_IK_SWITCH_PREFIXES for side in _SIDES]
+    wanted += [f"{FINGER_SWITCH_PREFIX}{side}" for side in _SIDES]
+    changes: dict[str, object] = {}
+    for name in wanted:
+        current = switches.get(name)
+        if current is None:
+            continue
+        fk_value: object = False if isinstance(current, bool) else 0.0
+        if current != fk_value:
+            changes[name] = fk_value
+    return changes

@@ -100,6 +100,7 @@ def _draw_save_row(layout, context, settings) -> None:
     row = layout.row(align=True)
     row.operator("posebridge.tpose", icon="ARMATURE_DATA")
     row.operator("posebridge.save_pose", text="Save Pose...", icon="FILE_TICK")
+    layout.prop(settings, "tpose_fk")
     folder = preferences.saved_poses_folder(context)
     if not folder.is_dir():
         box = layout.box()

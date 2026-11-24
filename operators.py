@@ -320,7 +320,8 @@ class POSEBRIDGE_OT_tpose(bpy.types.Operator):
     bl_idname = "posebridge.tpose"
     bl_label = "T-Pose"
     bl_description = (
-        "Return the target rig to its rest pose (T-pose), MHX switches to their defaults, and remove the action"
+        "Return the target rig to its rest pose (T-pose), MHX switches to their defaults (FK when 'T-Pose in FK' is on), "
+        "and remove the action"
     )
 
     @classmethod
@@ -330,7 +331,7 @@ class POSEBRIDGE_OT_tpose(bpy.types.Operator):
     def execute(self, context):
         settings = context.scene.pose_bridge
         try:
-            report = reset_to_tpose(context, settings.target_rig)
+            report = reset_to_tpose(context, settings.target_rig, fk=settings.tpose_fk)
         except ApplyError as exc:
             self.report({"ERROR"}, str(exc))
             return {"CANCELLED"}

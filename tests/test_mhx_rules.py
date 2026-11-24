@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from core import finger_sides, finger_switches_to_free
+from core import finger_sides, finger_switches_to_free, fk_switch_values
 from core.mhx_rules import FINGER_SWITCH_PREFIX
 
 
@@ -38,3 +38,46 @@ def test_missing_switches_and_non_boolean_values_are_ignored() -> None:
     assert finger_switches_to_free(["f_index.01.L"], {}) == []
     assert finger_switches_to_free(["f_index.01.L"], {f"{FINGER_SWITCH_PREFIX}L": 1.0}) == []
     assert finger_switches_to_free(["spine"], {f"{FINGER_SWITCH_PREFIX}L": True}) == []
+
+
+MHX_DEFAULTS = {
+    "MhaArmIk_L": 1.0,
+    "MhaArmIk_R": 1.0,
+    "MhaLegIk_L": 1.0,
+    "MhaLegIk_R": 1.0,
+    f"{FINGER_SWITCH_PREFIX}L": True,
+    f"{FINGER_SWITCH_PREFIX}R": True,
+    "MhaArmHinge_L": 0.0,
+    "MhaLimitsOn": True,
+}
+
+
+def test_fk_switches_turn_limbs_to_fk_and_fingers_off_keeping_types() -> None:
+    changes = fk_switch_values(MHX_DEFAULTS)
+    assert changes == {
+        "MhaArmIk_L": 0.0,
+        "MhaArmIk_R": 0.0,
+        "MhaLegIk_L": 0.0,
+        "MhaLegIk_R": 0.0,
+        f"{FINGER_SWITCH_PREFIX}L": False,
+        f"{FINGER_SWITCH_PREFIX}R": False,
+    }
+    assert all(isinstance(v, bool) for k, v in changes.items() if k.startswith(FINGER_SWITCH_PREFIX))
+    assert all(isinstance(v, float) for k, v in changes.items() if k.startswith("Mha") and "Ik" in k)
+
+
+def test_fk_switches_leave_other_switches_alone() -> None:
+    changes = fk_switch_values(MHX_DEFAULTS)
+    assert "MhaArmHinge_L" not in changes
+    assert "MhaLimitsOn" not in changes
+
+
+def test_fk_switches_skip_ones_already_in_fk_or_missing() -> None:
+    already = {"MhaArmIk_L": 0.0, f"{FINGER_SWITCH_PREFIX}L": False, "MhaLegIk_R": 1.0}
+    assert fk_switch_values(already) == {"MhaLegIk_R": 0.0}
+    assert fk_switch_values({}) == {}
+    assert fk_switch_values({"MhaArmHinge_L": 1.0}) == {}
+
+
+def test_partial_ik_values_are_switched_to_fk() -> None:
+    assert fk_switch_values({"MhaArmIk_L": 0.4}) == {"MhaArmIk_L": 0.0}

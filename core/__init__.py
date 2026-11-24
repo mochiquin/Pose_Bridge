@@ -21,7 +21,7 @@ from .library_scan import (
     sniff_duf_kind,
 )
 from .library_view import TOP, FolderRef, FolderView, LibraryIndex, Page, paginate, parent_of
-from .mhx_rules import finger_sides, finger_switches_to_free
+from .mhx_rules import finger_sides, finger_switches_to_free, fk_switch_values
 from .pose_naming import default_name, sanitize_filename, split_subfolder, unique_stem
 from .pose_schema import EXTENSION as POSE_EXTENSION
 from .pose_schema import PoseFileError, dumps, loads, make_pose_data, match_bones
@@ -56,6 +56,7 @@ __all__ = [
     "TOP",
     "filter_entries",
     "finger_sides",
+    "fk_switch_values",
     "finger_switches_to_free",
     "guess_kind",
     "load_cache",

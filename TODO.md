@@ -2,10 +2,11 @@
 
 ## 待办
 
-- [ ] IK / FK 绑定问题：等用户描述具体现象后排查
 - [ ] 库里没有动画：Genesis 8 Female 的 `Animations` 文件夹没加入库根目录（偏好里点 From DAZ Importer 可加）
 
 ## 已完成
+
+- [x] T-pose 后 FK 骨骼（如 `forearm.fk.L`、手部、手指）动不了：原因是 T-pose 把 MHX 开关复位为 IK 开 + 手指控制开。新增 "T-Pose in FK" 选项（默认开）：复位后四肢 FK、手指控制关；`core/mhx_rules.fk_switch_values` + 4 项 pytest（共 132 项），Blender 内实测通过。MHX 自带的肘部限制（Z 轴锁、X -20°~135°、Y ±90°）不属于 bug，Limits 关掉即可解除
 
 - [x] 核心操作在 Blender 5.2 用 MCP 实测（DAZ 姿势套用、撤销/重做、T-pose、DAZ 动画套用、调整层添加/丢弃）全部正常，测后场景已还原
   - T-pose 会把 MHX 开关复位为默认：IK 全部 =1、手指控制 =开
