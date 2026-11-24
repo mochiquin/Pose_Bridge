@@ -26,5 +26,8 @@ pose_bridge_index.json
 Thumbs.db
 desktop.ini
 
+# Personal notes
+TODO.md
+
 # Claude Code local settings
 .claude/settings.local.json

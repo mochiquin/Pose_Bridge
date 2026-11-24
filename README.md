@@ -66,7 +66,7 @@ python -m pytest -v
 ruff check .
 ```
 
-开发约定见 [AGENTS.md](AGENTS.md)，待办见 [TODO.md](TODO.md)。
+开发约定见 [AGENTS.md](AGENTS.md)。
 
 ## 许可证
 
