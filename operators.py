@@ -137,7 +137,11 @@ class POSEBRIDGE_OT_rescan(bpy.types.Operator):
         sync_undo_limit(context)
         roots = preferences.configured_roots(context)
         if not roots:
-            self.report({"ERROR"}, "No library folders configured (Preferences > Add-ons > Pose Bridge)")
+            self.report(
+                {"ERROR"},
+                "No library folders configured (Preferences > Add-ons > Pose Bridge). "
+                "Or save a pose first: that creates the saved-poses library.",
+            )
             return {"CANCELLED"}
         entries = None if self.force else load_cache(preferences.cache_file(), roots, DEFAULT_EXTENSIONS)
         if entries is None:
@@ -360,6 +364,16 @@ class POSEBRIDGE_OT_save_pose(bpy.types.Operator):
         existing = [p.stem for p in folder.glob("*.pbpose")] if folder.is_dir() else []
         self.name = default_name(existing)
         return context.window_manager.invoke_props_dialog(self)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "name")
+        layout.prop(self, "subfolder")
+        layout.prop(self, "with_preview")
+        folder = preferences.saved_poses_folder(context)
+        layout.label(text=f"Saves to: {folder}")
+        if not folder.is_dir():
+            layout.label(text="(this folder will be created)", icon="INFO")
 
     def execute(self, context):
         settings = context.scene.pose_bridge

@@ -6,7 +6,7 @@ from pathlib import Path
 import bpy
 import bpy.utils.previews
 
-from . import library_state
+from . import library_state, preferences
 from .core import KIND_ANIMATION
 from .executor import adjust_action_name, has_adjust, undo_depth
 
@@ -95,6 +95,20 @@ def _draw_adjust(layout, settings) -> None:
         box.label(text="Pose bones and press I; the original animation is untouched")
 
 
+def _draw_save_row(layout, context, settings) -> None:
+    """T-pose / Save Pose buttons, the target folder when it is not created yet, and the status line."""
+    row = layout.row(align=True)
+    row.operator("posebridge.tpose", icon="ARMATURE_DATA")
+    row.operator("posebridge.save_pose", text="Save Pose...", icon="FILE_TICK")
+    folder = preferences.saved_poses_folder(context)
+    if not folder.is_dir():
+        box = layout.box()
+        box.label(text="Saved poses go to (created on first save):", icon="INFO")
+        box.label(text=str(folder))
+    if settings.status:
+        layout.label(text=settings.status)
+
+
 class POSEBRIDGE_PT_main(bpy.types.Panel):
     bl_label = "Pose Bridge"
     bl_idname = "POSEBRIDGE_PT_main"
@@ -123,6 +137,7 @@ class POSEBRIDGE_PT_main(bpy.types.Panel):
 
         if len(library_state.index()) == 0:
             layout.label(text="Press Scan to read the library folders", icon="INFO")
+            _draw_save_row(layout, context, settings)  # saving a pose works without any library
             return
 
         layout.prop(settings, "query", text="", icon="VIEWZOOM")
@@ -150,11 +165,7 @@ class POSEBRIDGE_PT_main(bpy.types.Panel):
         row.operator("posebridge.undo_apply", text=f"Undo ({undo_steps})" if undo_steps else "Undo", icon="LOOP_BACK")
         row.operator("posebridge.redo", text=f"Redo ({redo_steps})" if redo_steps else "Redo", icon="LOOP_FORWARDS")
         _draw_adjust(layout, settings)
-        row = layout.row(align=True)
-        row.operator("posebridge.tpose", icon="ARMATURE_DATA")
-        row.operator("posebridge.save_pose", text="Save Pose...", icon="FILE_TICK")
-        if settings.status:
-            layout.label(text=settings.status)
+        _draw_save_row(layout, context, settings)
 
 
 class POSEBRIDGE_PT_display(bpy.types.Panel):
