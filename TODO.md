@@ -2,9 +2,11 @@
 
 ## 待办
 
-- [ ] 配置远程仓库并推送
+（暂无）
 
 ## 已完成
+
+- [x] 配置远程仓库并推送（https://github.com/mochiquin/Pose_Bridge ，main 分支）；新增 README、LICENSE（MIT）、完善 `.gitignore`，作者改为 mochiquin
 
 - [x] 保存目录不存在的 UI 提示：空库时面板也显示 Save Pose 并提示保存位置；保存对话框显示目标目录；无库文件夹时 Scan 报错提示可先保存姿势（Blender 内实测通过）
 
